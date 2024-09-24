@@ -71,7 +71,7 @@ namespace OblgOpg1Trophy.Repositories
         /// </summary>
         /// <param name="id">the id given to retrieve an item from the list</param>
         /// <returns></returns>
-        public Trophy GetById(int id)
+        public Trophy? GetById(int id)
         {
             return _trophies.FirstOrDefault(a => a.Id == id);
         }
@@ -81,7 +81,7 @@ namespace OblgOpg1Trophy.Repositories
         /// </summary>
         /// <param name="trophy">The trophy to get added</param>
         /// <returns></returns>
-        public Trophy Add(Trophy trophy)
+        public Trophy? Add(Trophy trophy)
         {
             trophy.Validate();
             if (trophy != null)
@@ -98,7 +98,7 @@ namespace OblgOpg1Trophy.Repositories
         /// </summary>
         /// <param name="id">the id given as argument to find the item to be deleted</param>
         /// <returns></returns>
-        public Trophy Remove(int id)
+        public Trophy? Remove(int id)
         {
             var trophyToBeDeleted = _trophies.FirstOrDefault(a => a.Id == id);
 
@@ -112,7 +112,7 @@ namespace OblgOpg1Trophy.Repositories
         /// <param name="id">The id given as an argument to find the item to be updated</param>
         /// <param name="values">The trophy containing the new values that you want to update with</param>
         /// <returns></returns>
-        public Trophy Update(int id, Trophy values)
+        public Trophy? Update(int id, Trophy values)
         {
             values.Validate();
 

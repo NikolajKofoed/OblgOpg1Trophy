@@ -40,12 +40,14 @@ namespace OblgOpg1Trophy.Repositories.Tests
         public void GetTest()
         {
 
-
             Assert.AreEqual(_repo.Get().First().Competition, "C Just Swim in");
             Assert.AreEqual(_repo.Get().Count(), 5);
+
+
             Assert.AreEqual(_repo.Get(yearLessThan: 2000).Count(), 2);
             Assert.AreEqual(_repo.Get(yearMoreThan: 2000).Count(), 3);
             Assert.AreEqual(_repo.Get(yearMoreThan: 2000, yearLessThan: 2004).Count(), 1);
+
             Assert.AreEqual(_repo.Get(sortBy: "YearAsc").First().Year, 1988);
             Assert.AreEqual(_repo.Get(sortBy: "YearDesc").First().Year, 2023);
             Assert.AreEqual(_repo.Get(sortBy: "CompAsc").First().Competition, "A World Tour Swimming");
@@ -60,10 +62,12 @@ namespace OblgOpg1Trophy.Repositories.Tests
         public void GetByIdTest()
         {
             var item = _repo.GetById(1);
-            var illegalItem = _repo.GetById(123123); // Assume Id: 123123 is invalid
+            var illegalItem = _repo.GetById(-123123); 
 
             Assert.IsNull(illegalItem);
             Assert.IsNotNull(item);
+            Assert.AreEqual(item.Competition, "C Just Swim in");
+            Assert.AreEqual(item.Year, 2014);
         }
 
 
@@ -74,13 +78,11 @@ namespace OblgOpg1Trophy.Repositories.Tests
         public void AddTest()
         {
             // arrange 
-            var trophy1 = new Trophy("Diggin and stuff", 2024);
-
-            Assert.AreEqual(_repo.Get().Count(), 5);
-
-            _repo.Add(trophy1);
+            var trophy1 = _repo.Add(new Trophy("Diggin and stuff", 2024));
 
             Assert.AreEqual(_repo.Get().Count(), 6);
+            Assert.AreEqual(trophy1.Competition, "Diggin and stuff");
+            Assert.AreEqual(trophy1.Year, 2024);
         }
 
         /// <summary>
@@ -90,10 +92,17 @@ namespace OblgOpg1Trophy.Repositories.Tests
         public void RemoveTest()
         {
             var initialCount = _repo.Get().Count();
-            var removedItem = _repo.Remove(4); // Assume ID 4 exists
+            var removedTrophy = _repo.Remove(4);
 
             Assert.AreEqual(initialCount - 1, _repo.Get().Count());
-            Assert.IsFalse(_repo.Get().Any(t => t.Id == removedItem.Id)); // Make sure the Trophy no longer exists in the list
+            Assert.IsFalse(_repo.Get().Any(t => t.Id == removedTrophy.Id)); // Make sure the Trophy no longer exists in the list
+            Assert.AreEqual(removedTrophy.Competition, "E Tour De France");
+            Assert.AreEqual(removedTrophy.Year, 1988);
+
+            var removedTrophyNull = _repo.Remove(-1);
+            Assert.IsNull(removedTrophyNull); // make sure invalid input gives null
+            Assert.AreEqual(initialCount - 1, _repo.Get().Count()); // Make sure count hasn't changed
+
         }
 
 
@@ -103,19 +112,14 @@ namespace OblgOpg1Trophy.Repositories.Tests
         [TestMethod()]
         public void UpdateTest()
         {
-            var originalValues = _repo.GetById(1);
-            var updatedValues = new Trophy("pølse spisning", 2004);
+            var updatedTrophy = _repo.Update(1, new Trophy("Imaginary", 2005));
 
-            _repo.Update(1, updatedValues);
+            Assert.AreEqual(_repo.GetById(1).Competition, updatedTrophy.Competition);
+            Assert.AreEqual(_repo.GetById(1).Year, updatedTrophy.Year);
+            Assert.AreEqual(_repo.GetById(1).Id, updatedTrophy.Id);
 
-            var updatedTrophy = _repo.GetById(1);
-            Assert.AreEqual(updatedValues.Competition, updatedTrophy.Competition);
-            Assert.AreEqual(updatedValues.Year, updatedTrophy.Year);
-
-            // Ensure other items are unchanged
-            var otherTrophy = _repo.GetById(2); // Assuming ID 2 exists
-            Assert.AreNotEqual(updatedValues.Competition, otherTrophy.Competition);
-            Assert.AreNotEqual(updatedValues.Year, otherTrophy.Year);
+            var updatedTrophyNull = _repo.Update(-1, new Trophy("this is null", 2015));
+            Assert.IsNull(updatedTrophyNull);
         }
 
     }

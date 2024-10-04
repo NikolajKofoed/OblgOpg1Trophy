@@ -52,6 +52,8 @@ namespace OblgOpg1Trophy.Repositories.Tests
             Assert.AreEqual(_repo.Get(sortBy: "YearDesc").First().Year, 2023);
             Assert.AreEqual(_repo.Get(sortBy: "CompAsc").First().Competition, "A World Tour Swimming");
             Assert.AreEqual(_repo.Get(sortBy: "CompDesc").First().Competition, "E Tour De France");
+            Assert.AreEqual(_repo.Get(sortBy: "invalid value").First().Competition, "C Just Swim in"); // no changes to list are made if value doesn't exist
+            Assert.AreEqual(_repo.Get(sortBy: "invalid value").First().Year, 2014); // no changes to list are made if value doesn't exist
 
         }
 
@@ -118,8 +120,9 @@ namespace OblgOpg1Trophy.Repositories.Tests
             Assert.AreEqual(_repo.GetById(1).Year, updatedTrophy.Year);
             Assert.AreEqual(_repo.GetById(1).Id, updatedTrophy.Id);
 
-            var updatedTrophyNull = _repo.Update(-1, new Trophy("this is null", 2015));
-            Assert.IsNull(updatedTrophyNull);
+
+            var trophyToBeUpdatedNull = _repo.Update(-1, new Trophy("this is null, cuz id", 2015));
+            Assert.IsNull(trophyToBeUpdatedNull);
         }
 
     }

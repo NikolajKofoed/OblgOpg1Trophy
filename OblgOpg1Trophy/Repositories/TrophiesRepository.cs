@@ -118,7 +118,7 @@ namespace OblgOpg1Trophy.Repositories
 
             var trophyToBeUpdated = _trophies.FirstOrDefault(a => a.Id == id);
 
-            if (values != null && trophyToBeUpdated != null)
+            if (trophyToBeUpdated != null)
             {
                 trophyToBeUpdated.Competition = values.Competition;
                 trophyToBeUpdated.Year = values.Year;
